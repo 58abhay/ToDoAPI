@@ -28,7 +28,7 @@ A fully documented and production-grade Web API built with ASP.NET Core. Include
 - FluentValidation  
 - Swagger (Swashbuckle)  
 - Visual Studio 2022+  
-- .NET 6 or 7 SDK  
+- .NET 6 or 7 SDK or SDK 8  
 
 ---
 
