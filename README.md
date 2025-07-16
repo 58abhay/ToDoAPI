@@ -65,7 +65,7 @@ All endpoints return a standardized response in JSON format using the generic `A
   "success": true,
   "message": "Descriptive status message",
   "data": { /* Object or list */ }
-}```
+}
 
 - success: Boolean status of the operation
 - message: Human-readable outcome
@@ -80,7 +80,7 @@ All endpoints return a standardized response in JSON format using the generic `A
 - Fluent validators are registered using:
 
 ```builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();```
+builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
 
 - Invalid input triggers early model validation with descriptive error messages.
 
@@ -93,7 +93,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();`
 
 ```{
   "message": "An unexpected error occurred."
-}```
+}
 
 - This prevents exposure of internal stack traces to the client.
 
