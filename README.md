@@ -60,7 +60,8 @@ A fully documented and production-grade Web API built with ASP.NET Core. Include
 
 All endpoints return a standardized response in JSON format using the generic `ApiResponse<T>` wrapper:
 
-```json
+```
+json
 {
   "success": true,
   "message": "Descriptive status message",
@@ -79,7 +80,8 @@ All endpoints return a standardized response in JSON format using the generic `A
 - All DTOs are annotated with DataAnnotations such as `[Required]`, `[EmailAddress]`, and `[MinLength]`.
 - Fluent validators are registered using:
 
-```builder.Services.AddFluentValidationAutoValidation();
+```
+builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
 ```
 - Invalid input triggers early model validation with descriptive error messages.
@@ -91,7 +93,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
 - Custom middleware intercepts unhandled exceptions.
 - Errors are logged and returned using a clean JSON format:
 
-```{
+```
+{
   "message": "An unexpected error occurred."
 }
 ```
