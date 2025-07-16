@@ -4,7 +4,7 @@ namespace ToDoApi.Models.DTOs
 {
     public class CreateToDoDto
     {
-        [Required]
+        //[Required]
         public string Task { get; set; }
 
         public bool IsCompleted { get; set; }

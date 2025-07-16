@@ -4,11 +4,11 @@ namespace ToDoApi.Models.DTOs
 {
     public class CreateUserDto
     {
-        [Required]
+        //[Required]
         [EmailAddress]
         public string UserEmail { get; set; }
 
-        [Required]
+        //[Required]
         [MinLength(6)]
         public string Password { get; set; }
     }

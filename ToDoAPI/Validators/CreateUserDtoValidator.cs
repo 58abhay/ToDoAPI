@@ -7,8 +7,12 @@ namespace ToDoApi.Validators
     {
         public CreateUserDtoValidator()
         {
-            RuleFor(x => x.UserEmail).NotEmpty().EmailAddress();
-            RuleFor(x => x.Password).NotEmpty().MinimumLength(6);
+            RuleFor(x => x.UserEmail)
+                .NotEmpty()
+                .EmailAddress();
+            RuleFor(x => x.Password)
+                .NotEmpty()
+                .MinimumLength(6);
         }
     }
 }

@@ -8,10 +8,14 @@ namespace ToDoApi.Validators
         public CreateToDoDtoValidator()
         {
             RuleFor(x => x.Task)
-                .NotEmpty().WithMessage("Task description is required");
+                .NotEmpty()
+                .WithMessage("Task description is required")
+                .MaximumLength(200);
 
             RuleFor(x => x.IsCompleted)
-                .NotNull().WithMessage("Completion status must be specified");
+                .NotNull()
+                .WithMessage("Completion status must be specified");
+                
         }
     }
 }
