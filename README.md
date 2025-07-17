@@ -204,10 +204,6 @@ Implemented dynamic querying for both `Tasks` and `Users`:
 
 ---
 
-Absolutely, Abhaydeep — here’s a polished section you can add to your `README.md` to document the **async/await transformation** and **EF Core async integration**. This shows your commitment to building scalable, production-grade APIs 🚀📘
-
----
-
 ## ⚡ Async/Await Integration for Scalable API Performance
 
 The project has been fully upgraded to use **asynchronous programming** with `async/await` across all service and controller layers. This ensures non-blocking I/O and improved responsiveness under load — a critical best practice for real-world APIs.
