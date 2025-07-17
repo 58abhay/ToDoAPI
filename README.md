@@ -145,10 +145,17 @@ _db.SaveChanges();            // Persist changes
 
 ## 📚 Future Enhancements
 
-- JWT Authentication with role-based authorization
-- Persistent database with Entity Framework Core
-- Custom logging middleware with request tracing
-- Unit and integration testing via xUnit
-- API versioning and rate limiting
-- OpenAPI enhancements with XML docs and schema examples
+- 🔐 Add JWT authentication and role-based authorization
+- ⚡ Refactor services to use async EF Core methods
+- 🧪 Implement unit and integration testing with xUnit
+- 📊 Add filtering, sorting, and pagination to endpoints
+- 🌱 Seed initial data during migrations or startup
+- 📄 Improve Swagger docs with XML comments and examples
+- 🧰 Integrate structured logging (e.g., Serilog)
+- 🌐 Support API versioning (/api/v1, /api/v2)
+- 🧠 Add caching for frequently accessed endpoints
+- 🔗 Model relationships (e.g., User → ToDos) with .Include()
+
+
+
 
