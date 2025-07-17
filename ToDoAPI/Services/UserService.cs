@@ -1,4 +1,6 @@
-﻿//using ToDoApi.Models;
+﻿//using Microsoft.EntityFrameworkCore;
+//using ToDoApi.Data;
+//using ToDoApi.Models;
 //using ToDoApi.Models.DTOs;
 //using ToDoApi.Services.Interfaces;
 
@@ -6,38 +8,82 @@
 //{
 //    public class UserService : IUserService
 //    {
-//        private readonly List<User> _users = new();
-//        private int _nextId = 1;
+//        private readonly AppDbContext _db;
 
-//        public List<User> GetAll() => _users;
+//        public UserService(AppDbContext db)
+//        {
+//            _db = db;
+//        }
 
-//        public User GetById(int id) => _users.FirstOrDefault(u => u.UserId == id);
+//        public List<User> GetAll()
+//        {
+//            return _db.Users.ToList(); // Retrieves all users from DB
+//        }
+
+//        public User GetById(int id)
+//        {
+//            return _db.Users.Find(id); // Fetches user by primary key
+//        }
 
 //        public User Create(CreateUserDto input)
 //        {
-//            var user = new User { UserId = _nextId++, UserEmail = input.UserEmail, Password = input.Password };
-//            _users.Add(user);
+//            var user = new User
+//            {
+//                UserEmail = input.UserEmail,
+//                Password = input.Password
+//            };
+//            _db.Users.Add(user); // Adds to tracking
+//            _db.SaveChanges();   // Commits to PostgreSQL
 //            return user;
 //        }
 
 //        public User Update(int id, UpdateUserDto input)
 //        {
-//            var user = _users.FirstOrDefault(u => u.UserId == id);
+//            var user = _db.Users.Find(id);
 //            if (user == null) return null;
+
 //            user.UserEmail = input.UserEmail;
 //            user.Password = input.Password;
+//            _db.SaveChanges();
 //            return user;
 //        }
 
 //        public bool Delete(int id)
 //        {
-//            var user = _users.FirstOrDefault(u => u.UserId == id);
+//            var user = _db.Users.Find(id);
 //            if (user == null) return false;
-//            _users.Remove(user);
+
+//            _db.Users.Remove(user);
+//            _db.SaveChanges();
 //            return true;
+//        }
+
+//        public List<User> GetFiltered(string? search, string? sortBy, int page, int pageSize)
+//        {
+//            var query = _db.Users.AsQueryable();
+
+//            // Filtering
+//            if (!string.IsNullOrWhiteSpace(search))
+//                query = query.Where(u => u.UserEmail.Contains(search));
+
+//            // Sorting
+//            query = sortBy?.ToLower() switch
+//            {
+//                "email" => query.OrderBy(u => u.UserEmail),
+//                "email_desc" => query.OrderByDescending(u => u.UserEmail),
+//                "id_desc" => query.OrderByDescending(u => u.UserId),
+//                _ => query.OrderBy(u => u.UserId)
+//            };
+
+//            // Pagination
+//            int skip = (page - 1) * pageSize;
+//            query = query.Skip(skip).Take(pageSize);
+
+//            return query.ToList();
 //        }
 //    }
 //}
+
 
 using Microsoft.EntityFrameworkCore;
 using ToDoApi.Data;
@@ -56,50 +102,51 @@ namespace ToDoApi.Services
             _db = db;
         }
 
-        public List<User> GetAll()
+        public async Task<List<User>> GetAllAsync()
         {
-            return _db.Users.ToList(); // Retrieves all users from DB
+            return await _db.Users.ToListAsync();
         }
 
-        public User GetById(int id)
+        public async Task<User> GetByIdAsync(int id)
         {
-            return _db.Users.Find(id); // Fetches user by primary key
+            return await _db.Users.FindAsync(id);
         }
 
-        public User Create(CreateUserDto input)
+        public async Task<User> CreateAsync(CreateUserDto input)
         {
             var user = new User
             {
                 UserEmail = input.UserEmail,
                 Password = input.Password
             };
-            _db.Users.Add(user); // Adds to tracking
-            _db.SaveChanges();   // Commits to PostgreSQL
+
+            _db.Users.Add(user);
+            await _db.SaveChangesAsync();
             return user;
         }
 
-        public User Update(int id, UpdateUserDto input)
+        public async Task<User> UpdateAsync(int id, UpdateUserDto input)
         {
-            var user = _db.Users.Find(id);
+            var user = await _db.Users.FindAsync(id);
             if (user == null) return null;
 
             user.UserEmail = input.UserEmail;
             user.Password = input.Password;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return user;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var user = _db.Users.Find(id);
+            var user = await _db.Users.FindAsync(id);
             if (user == null) return false;
 
             _db.Users.Remove(user);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return true;
         }
 
-        public List<User> GetFiltered(string? search, string? sortBy, int page, int pageSize)
+        public async Task<List<User>> GetFilteredAsync(string? search, string? sortBy, int page, int pageSize)
         {
             var query = _db.Users.AsQueryable();
 
@@ -120,7 +167,7 @@ namespace ToDoApi.Services
             int skip = (page - 1) * pageSize;
             query = query.Skip(skip).Take(pageSize);
 
-            return query.ToList();
+            return await query.ToListAsync();
         }
     }
 }
