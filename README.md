@@ -117,7 +117,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
 
 This project now uses Entity Framework Core (EF Core) to connect to a real PostgreSQL database, replacing the previous in-memory storage. All data is persisted across sessions, enabling production-grade reliability and scalability.
 
-###✅ Highlights
+### ✅ Highlights
 
 - 🔗 Connected to PostgreSQL using Npgsql.EntityFrameworkCore.PostgreSQL
 - 🧠 Replaced in-memory List<T> logic with EF Core queries
