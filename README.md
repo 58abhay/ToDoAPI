@@ -18,7 +18,41 @@ A fully documented and production-grade Web API built with ASP.NET Core. Include
 ---
 
 ## 🏗 Project Architecture
-```ToDoAPI/ ├── Controllers/ │   ├── TasksController.cs │   └── UserController.cs ├── Middleware/ │   └── ExceptionMiddleware.cs ├── Models/ │   ├── ApiResponse.cs │   ├── ToDo.cs │   └── User.cs ├── Models/DTOs/ │   ├── CreateToDoDto.cs │   ├── CreateUserDto.cs │   ├── UpdateToDoDto.cs │   └── UpdateUserDto.cs ├── Services/ │   ├── ToDoService.cs │   └── UserService.cs ├── Services/Interfaces/ │   ├── IToDoService.cs │   └── IUserService.cs ├── Validators/ │   ├── CreateToDoDtoValidator.cs │   ├── UpdateToDoDtoValidator.cs │   ├── CreateUserDtoValidator.cs │   └── UpdateUserDtoValidator.cs ├── Program.cs └── README.md```
+```
+ToDoAPI/
+├── Controllers/
+│   ├── TasksController.cs
+│   └── UserController.cs
+├── Data/
+│   └── AppDbContext.cs
+├── Middleware/
+│   └── ExceptionMiddleware.cs
+├── Migrations/
+│   ├── 20250716105545_InitialCreate.cs
+│   └── AppDbContextModelSnapshot
+├── Models/
+│   ├── ApiResponse.cs
+│   ├── ToDo.cs
+│   └── User.cs
+├── Models/DTOs/
+│   ├── CreateToDoDto.cs
+│   ├── CreateUserDto.cs
+│   ├── UpdateToDoDto.cs
+│   └── UpdateUserDto.cs
+├── Services/
+│   ├── ToDoService.cs
+│   └── UserService.cs
+├── Services/Interfaces/
+│   ├── IToDoService.cs
+│   └── IUserService.cs
+├── Validators/
+│   ├── CreateToDoDtoValidator.cs
+│   ├── UpdateToDoDtoValidator.cs
+│   ├── CreateUserDtoValidator.cs
+│   └── UpdateUserDtoValidator.cs
+├── Program.cs
+└── README.md
+```
 
 ---
 
