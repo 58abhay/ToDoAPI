@@ -18,7 +18,41 @@ A fully documented and production-grade Web API built with ASP.NET Core. Include
 ---
 
 ## 🏗 Project Architecture
-```ToDoAPI/ ├── Controllers/ │   ├── TasksController.cs │   └── UserController.cs ├── Middleware/ │   └── ExceptionMiddleware.cs ├── Models/ │   ├── ApiResponse.cs │   ├── ToDo.cs │   └── User.cs ├── Models/DTOs/ │   ├── CreateToDoDto.cs │   ├── CreateUserDto.cs │   ├── UpdateToDoDto.cs │   └── UpdateUserDto.cs ├── Services/ │   ├── ToDoService.cs │   └── UserService.cs ├── Services/Interfaces/ │   ├── IToDoService.cs │   └── IUserService.cs ├── Validators/ │   ├── CreateToDoDtoValidator.cs │   ├── UpdateToDoDtoValidator.cs │   ├── CreateUserDtoValidator.cs │   └── UpdateUserDtoValidator.cs ├── Program.cs └── README.md```
+```
+ToDoAPI/
+├── Controllers/
+│   ├── TasksController.cs
+│   └── UserController.cs
+├── Data/
+│   └── AppDbContext.cs
+├── Middleware/
+│   └── ExceptionMiddleware.cs
+├── Migrations/
+│   ├── 20250716105545_InitialCreate.cs
+│   └── AppDbContextModelSnapshot
+├── Models/
+│   ├── ApiResponse.cs
+│   ├── ToDo.cs
+│   └── User.cs
+├── Models/DTOs/
+│   ├── CreateToDoDto.cs
+│   ├── CreateUserDto.cs
+│   ├── UpdateToDoDto.cs
+│   └── UpdateUserDto.cs
+├── Services/
+│   ├── ToDoService.cs
+│   └── UserService.cs
+├── Services/Interfaces/
+│   ├── IToDoService.cs
+│   └── IUserService.cs
+├── Validators/
+│   ├── CreateToDoDtoValidator.cs
+│   ├── UpdateToDoDtoValidator.cs
+│   ├── CreateUserDtoValidator.cs
+│   └── UpdateUserDtoValidator.cs
+├── Program.cs
+└── README.md
+```
 
 ---
 
@@ -119,17 +153,17 @@ This project now uses Entity Framework Core (EF Core) to connect to a real Postg
 
 ### ✅ Highlights
 
-- 🔗 Connected to PostgreSQL using Npgsql.EntityFrameworkCore.PostgreSQL
-- 🧠 Replaced in-memory List<T> logic with EF Core queries
-- 📦 Data is stored in ToDoApiDb with tables for Users and ToDos
-- 🛠️ Migrations are managed via EF CLI (dotnet ef)
-- 🔄 Services now use AppDbContext for all CRUD operations
+- 🔗 Connected to PostgreSQL using `Npgsql.EntityFrameworkCore.PostgreSQL`
+- 🧠 Replaced in-memory `List<T>` logic with EF Core queries
+- 📦 Data is stored in `ToDoApiDb` with tables for `Users` and `ToDos`
+- 🛠️ Migrations are managed via EF CLI (`dotnet ef`)
+- 🔄 Services now use `AppDbContext` for all CRUD operations
 
 ### 📁 Key Changes
 
-- Created AppDbContext.cs in /Data folder
-- Registered EF Core in Program.cs using AddDbContext
-- Updated UserService.cs and ToDoService.cs to use _db.Users and _db.ToDos
+- Created `AppDbContext.cs` in /Data folder
+- Registered EF Core in `Program.cs` using `AddDbContext`
+- Updated `UserService.cs` and `ToDoService.cs` to use `_db.Users` and `_db.ToDos`
 - Applied initial migration with:
 ```
   dotnet ef migrations add InitialCreate
@@ -141,6 +175,33 @@ _db.Users.ToList();           // Get all users
 _db.ToDos.Find(id);           // Find task by ID
 _db.SaveChanges();            // Persist changes
 ```
+---
+
+## 📊 Pagination, Filtering & Sorting
+
+Implemented dynamic querying for both `Tasks` and `Users`:
+
+### ✅ Tasks Endpoint (GET /api/tasks) Supports:
+
+- `?search=urgent` → filter by task name
+- `?isCompleted=true` → filter by completion status
+- `?sortBy=task_desc` → sort by task name descending
+- `?page=2&pageSize=5` → paginate results
+
+### ✅ Users Endpoint (GET /api/user) Supports:
+
+- `?search=gmail` → filter by email
+- `?sortBy=email_desc` → sort by email descending
+- `?page=1&pageSize=10` → paginate results
+
+### 🧠 Technical Highlights
+
+- Used LINQ with EF Core for efficient query building
+- Registered services with correct lifetimes (`AddScoped`)
+- Updated service interfaces to support new query methods
+- Enhanced controller endpoints with query parameters
+- Returned structured responses using `ApiResponse<T>`
+
 ---
 
 ## 📚 Future Enhancements
