@@ -17,14 +17,18 @@ namespace ToDoApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<User>> GetAll()
+        public ActionResult<IEnumerable<User>> GetAll(
+                [FromQuery] string? search,
+                [FromQuery] string? sortBy,
+                [FromQuery] int page = 1,
+                [FromQuery] int pageSize = 10)
         {
-            var users = _Service.GetAll();
+            var users = _Service.GetFiltered(search, sortBy, page, pageSize);
             if (!users.Any())
             {
                 return Ok(new ApiResponse<IEnumerable<User>>(true, "No User Found - list is empty", users));
             }
-            return Ok(new ApiResponse<IEnumerable<User>>(true, "All Users fetched successfully", users));
+            return Ok(new ApiResponse<IEnumerable<User>>(true, "Filtered Users fetched successfully", users));
             //var message = users.Any() ? "All Users fetched successfully" : "No User Found - list is empty";
             //return Ok(new ApiResponse<IEnumerable<User>>(true, message, users));
         }

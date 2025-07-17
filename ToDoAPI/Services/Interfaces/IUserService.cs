@@ -10,5 +10,6 @@ namespace ToDoApi.Services.Interfaces
         User Create(CreateUserDto input);
         User Update(int id, UpdateUserDto input);
         bool Delete(int id);
+        List<User> GetFiltered(string? search, string? sortBy, int page, int pageSize);
     }
 }

@@ -98,5 +98,32 @@ namespace ToDoApi.Services
             _db.SaveChanges();
             return true;
         }
+
+        public List<ToDo> GetFiltered(string? search, string? sortBy, bool? isCompleted, int page, int pageSize)
+        {
+            var query = _db.ToDos.AsQueryable();
+
+            // Filtering
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(t => t.Task.Contains(search));
+
+            if (isCompleted.HasValue)
+                query = query.Where(t => t.IsCompleted == isCompleted.Value);
+
+            // Sorting
+            query = sortBy?.ToLower() switch
+            {
+                "task" => query.OrderBy(t => t.Task),
+                "task_desc" => query.OrderByDescending(t => t.Task),
+                "id_desc" => query.OrderByDescending(t => t.Id),
+                _ => query.OrderBy(t => t.Id)
+            };
+
+            // Pagination
+            int skip = (page - 1) * pageSize;
+            query = query.Skip(skip).Take(pageSize);
+
+            return query.ToList();
+        }
     }
 }

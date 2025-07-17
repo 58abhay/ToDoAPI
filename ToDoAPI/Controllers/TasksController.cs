@@ -18,14 +18,19 @@ namespace ToDoApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ToDo>> GetAll()
+        public ActionResult<IEnumerable<ToDo>> GetAll(
+            [FromQuery] string? search,
+            [FromQuery] string? sortBy,
+            [FromQuery] bool? isCompleted,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
-            var tasks = _Service.GetAll();
+            var tasks = _Service.GetFiltered(search, sortBy, isCompleted, page, pageSize);
             if (!tasks.Any())
             {
                 return Ok(new ApiResponse<IEnumerable<ToDo>>(true, "No Task Found - list is empty", tasks));
             }
-            return Ok(new ApiResponse<IEnumerable<ToDo>>(true, " All Tasks fetched successfully", tasks));
+            return Ok(new ApiResponse<IEnumerable<ToDo>>(true, "Filtered Tasks fetched successfully", tasks));
             //var message = tasks.Any() ? "All Tasks fetched successfully" : "No Task Found - list is empty";
             //return Ok(new ApiResponse<IEnumerable<ToDo>>(true, message, tasks));
         }
