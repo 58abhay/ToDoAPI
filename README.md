@@ -113,6 +113,36 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
 
 ---
 
+## 🗄️ Database Integration with PostgreSQL
+
+This project now uses Entity Framework Core (EF Core) to connect to a real PostgreSQL database, replacing the previous in-memory storage. All data is persisted across sessions, enabling production-grade reliability and scalability.
+
+###✅ Highlights
+
+- 🔗 Connected to PostgreSQL using Npgsql.EntityFrameworkCore.PostgreSQL
+- 🧠 Replaced in-memory List<T> logic with EF Core queries
+- 📦 Data is stored in ToDoApiDb with tables for Users and ToDos
+- 🛠️ Migrations are managed via EF CLI (dotnet ef)
+- 🔄 Services now use AppDbContext for all CRUD operations
+
+### 📁 Key Changes
+
+- Created AppDbContext.cs in /Data folder
+- Registered EF Core in Program.cs using AddDbContext
+- Updated UserService.cs and ToDoService.cs to use _db.Users and _db.ToDos
+- Applied initial migration with:
+```
+  dotnet ef migrations add InitialCreate
+  dotnet ef database update
+```
+### 🧪 Example EF Querie
+```
+_db.Users.ToList();           // Get all users
+_db.ToDos.Find(id);           // Find task by ID
+_db.SaveChanges();            // Persist changes
+```
+---
+
 ## 📚 Future Enhancements
 
 - JWT Authentication with role-based authorization
