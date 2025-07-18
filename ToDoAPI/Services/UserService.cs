@@ -104,7 +104,9 @@ namespace ToDoApi.Services
 
         public async Task<List<User>> GetAllAsync()
         {
-            return await _db.Users.ToListAsync();
+            return await _db.Users
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<User> GetByIdAsync(int id)
@@ -148,11 +150,15 @@ namespace ToDoApi.Services
 
         public async Task<List<User>> GetFilteredAsync(string? search, string? sortBy, int page, int pageSize)
         {
-            var query = _db.Users.AsQueryable();
+            var query = _db.Users
+                .AsNoTracking()
+                .AsQueryable();
 
             // Filtering
             if (!string.IsNullOrWhiteSpace(search))
-                query = query.Where(u => u.UserEmail.Contains(search));
+                query = query.Where(u => EF.Functions.Like(u.UserEmail, $"%{search}%"));
+                //query = query.Where(u => u.UserEmail.Contains(search));
+
 
             // Sorting
             query = sortBy?.ToLower() switch
@@ -166,6 +172,9 @@ namespace ToDoApi.Services
             // Pagination
             int skip = (page - 1) * pageSize;
             query = query.Skip(skip).Take(pageSize);
+
+            // Optional: Log SQL for diagnostics
+            Console.WriteLine(query.ToQueryString());
 
             return await query.ToListAsync();
         }
