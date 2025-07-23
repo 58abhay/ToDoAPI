@@ -2,6 +2,7 @@
 using ToDoAPI.Application.Interfaces;
 using ToDoAPI.Domain.Entities;
 using ToDoAPI.Infrastructure.Persistence;
+using System.Threading;
 
 namespace ToDoAPI.Infrastructure.Persistence.Repositories
 {
@@ -14,48 +15,55 @@ namespace ToDoAPI.Infrastructure.Persistence.Repositories
             _db = db;
         }
 
-        public async Task<List<AccountProfile>> GetAllAsync()
+        public async Task<List<AccountProfile>> GetAllAsync(CancellationToken cancellationToken)
         {
             return await _db.AccountProfiles
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<AccountProfile?> GetByIdAsync(int id)
+        public async Task<AccountProfile?> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _db.AccountProfiles.FindAsync(id);
+            return await _db.AccountProfiles
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
         }
 
-        public async Task<AccountProfile> CreateAsync(AccountProfile account)
+        public async Task<AccountProfile> CreateAsync(AccountProfile account, CancellationToken cancellationToken)
         {
-            _db.AccountProfiles.Add(account);
-            await _db.SaveChangesAsync();
+            await _db.AccountProfiles.AddAsync(account, cancellationToken);
+            await _db.SaveChangesAsync(cancellationToken);
             return account;
         }
 
-        public async Task<AccountProfile?> UpdateAsync(int id, AccountProfile updated)
+        public async Task<AccountProfile?> UpdateAsync(int id, AccountProfile updatedAccount, CancellationToken cancellationToken)
         {
-            var existing = await _db.AccountProfiles.FindAsync(id);
+            var existing = await _db.AccountProfiles.FindAsync(new object[] { id }, cancellationToken);
             if (existing is null) return null;
 
-            existing.Email = updated.Email;
-            existing.Password = updated.Password;
+            existing.Email = updatedAccount.Email;
+            existing.Password = updatedAccount.Password;
 
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync(cancellationToken);
             return existing;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            var account = await _db.AccountProfiles.FindAsync(id);
+            var account = await _db.AccountProfiles.FindAsync(new object[] { id }, cancellationToken);
             if (account is null) return false;
 
             _db.AccountProfiles.Remove(account);
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync(cancellationToken);
             return true;
         }
 
-        public async Task<List<AccountProfile>> GetFilteredAsync(string? search, string? sortBy, int page, int pageSize)
+        public async Task<List<AccountProfile>> GetFilteredAsync(
+            string? search,
+            string? sortBy,
+            int page,
+            int pageSize,
+            CancellationToken cancellationToken)
         {
             var query = _db.AccountProfiles.AsNoTracking().AsQueryable();
 
@@ -70,11 +78,10 @@ namespace ToDoAPI.Infrastructure.Persistence.Repositories
                 _ => query.OrderBy(a => a.Id)
             };
 
-            int skip = (page - 1) * pageSize;
-            query = query.Skip(skip).Take(pageSize);
+            query = query.Skip((page - 1) * pageSize).Take(pageSize);
 
             Console.WriteLine(query.ToQueryString());
-            return await query.ToListAsync();
+            return await query.ToListAsync(cancellationToken);
         }
     }
 }

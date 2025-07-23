@@ -2,6 +2,7 @@
 using ToDoAPI.Application.CQRS.TaskModule.Commands;
 using ToDoAPI.Application.Interfaces;
 using ToDoAPI.Domain.Entities;
+using ToDoAPI.Domain.Exceptions;
 
 namespace ToDoAPI.Application.CQRS.TaskModule.Handlers
 {
@@ -16,13 +17,17 @@ namespace ToDoAPI.Application.CQRS.TaskModule.Handlers
 
         public async Task<TaskItem> Handle(CreateTaskItemCommand request, CancellationToken cancellationToken)
         {
+            // Optional internal validation (FluentValidation handles this too)
+            if (string.IsNullOrWhiteSpace(request.Description))
+                throw new ValidationException(new List<string> { "Description cannot be empty." });
+
             var newTask = new TaskItem
             {
                 Description = request.Description,
                 IsCompleted = request.IsCompleted
             };
 
-            return await _repository.CreateAsync(newTask);
+            return await _repository.CreateAsync(newTask, cancellationToken);
         }
     }
 }

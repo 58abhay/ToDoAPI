@@ -5,6 +5,7 @@ using ToDoAPI.Application.CQRS.TaskModule.Commands;
 using ToDoAPI.Application.CQRS.TaskModule.Queries;
 using ToDoAPI.Domain.Entities;
 using ToDoAPI.Domain.Wrappers;
+using ToDoAPI.Domain.Exceptions;
 
 namespace ToDoAPI.API.Controllers
 {
@@ -19,6 +20,8 @@ namespace ToDoAPI.API.Controllers
             _mediator = mediator;
         }
 
+        private string? TraceId => HttpContext.Items["CorrelationId"]?.ToString();
+
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<TaskItem>>), StatusCodes.Status200OK)]
         public async Task<ActionResult<ApiResponse<IEnumerable<TaskItem>>>> GetAll(
@@ -31,73 +34,62 @@ namespace ToDoAPI.API.Controllers
             var query = new GetTaskItemListQuery(search, sortBy, isCompleted, page, pageSize);
             var items = await _mediator.Send(query);
 
-            return Ok(new ApiResponse<IEnumerable<TaskItem>>(items, items.Any() ? "Tasks retrieved" : "No tasks found"));
+            return Ok(new ApiResponse<IEnumerable<TaskItem>>(
+                items,
+                items.Any() ? $"Tasks retrieved [TraceId: {TraceId}]" : $"No tasks found [TraceId: {TraceId}]"
+            ));
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<TaskItem?>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse<TaskItem?>), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ApiResponse<TaskItem?>>> GetById(int id)
         {
             var query = new GetTaskItemByIdQuery(id);
             var item = await _mediator.Send(query);
 
             if (item is null)
-                return NotFound(new ApiResponse<TaskItem?>("Task not found"));
+                throw new NotFoundException($"Task with ID {id} not found");
 
-            return Ok(new ApiResponse<TaskItem?>(item, "Task retrieved"));
+            return Ok(new ApiResponse<TaskItem?>(item, $"Task retrieved [TraceId: {TraceId}]"));
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<TaskItem>), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ApiResponse<string?>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ApiResponse<TaskItem>>> Create([FromBody] CreateTaskDto input)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                return BadRequest(new ApiResponse<string?>("Invalid input", errors));
-            }
-
             var command = new CreateTaskItemCommand(input.Description, input.IsCompleted);
             var result = await _mediator.Send(command);
 
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, new ApiResponse<TaskItem>(result, "Task created"));
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, new ApiResponse<TaskItem>(
+                result,
+                $"Task created [TraceId: {TraceId}]"
+            ));
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApiResponse<TaskItem?>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse<TaskItem?>), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ApiResponse<string?>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ApiResponse<TaskItem?>>> Update(int id, [FromBody] UpdateTaskDto input)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                return BadRequest(new ApiResponse<string?>("Invalid update input", errors));
-            }
-
             var command = new UpdateTaskItemCommand(id, input.Description, input.IsCompleted);
             var result = await _mediator.Send(command);
 
             if (result is null)
-                return NotFound(new ApiResponse<TaskItem?>("Task not found"));
+                throw new NotFoundException($"Task with ID {id} not found");
 
-            return Ok(new ApiResponse<TaskItem?>(result, "Task updated"));
+            return Ok(new ApiResponse<TaskItem?>(result, $"Task updated [TraceId: {TraceId}]"));
         }
 
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiResponse<string?>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse<string?>), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ApiResponse<string?>>> Delete(int id)
         {
             var command = new DeleteTaskItemCommand(id);
             var success = await _mediator.Send(command);
 
             if (!success)
-                return NotFound(new ApiResponse<string?>("Task not found"));
+                throw new NotFoundException($"Task with ID {id} not found");
 
-            return Ok(new ApiResponse<string?>("Task deleted"));
+            return Ok(new ApiResponse<string?>($"Task deleted [TraceId: {TraceId}]"));
         }
     }
 }

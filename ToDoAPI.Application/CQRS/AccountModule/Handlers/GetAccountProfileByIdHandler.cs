@@ -2,10 +2,11 @@
 using ToDoAPI.Application.Interfaces;
 using ToDoAPI.Application.CQRS.AccountModule.Queries;
 using ToDoAPI.Domain.Entities;
+using ToDoAPI.Domain.Exceptions;
 
 namespace ToDoAPI.Application.CQRS.AccountModule.Handlers
 {
-    public class GetAccountProfileByIdHandler : IRequestHandler<GetAccountProfileByIdQuery, AccountProfile?>
+    public class GetAccountProfileByIdHandler : IRequestHandler<GetAccountProfileByIdQuery, AccountProfile>
     {
         private readonly IAccountRepository _repo;
 
@@ -14,9 +15,14 @@ namespace ToDoAPI.Application.CQRS.AccountModule.Handlers
             _repo = repo;
         }
 
-        public async Task<AccountProfile?> Handle(GetAccountProfileByIdQuery request, CancellationToken cancellationToken)
+        public async Task<AccountProfile> Handle(GetAccountProfileByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _repo.GetByIdAsync(request.Id);
+            var account = await _repo.GetByIdAsync(request.Id, cancellationToken);
+
+            if (account is null)
+                throw new NotFoundException($"Account with ID {request.Id} not found");
+
+            return account;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using ToDoAPI.Application.CQRS.AccountModule.Commands;
 using ToDoAPI.Application.Interfaces;
+using ToDoAPI.Domain.Exceptions;
 
 namespace ToDoAPI.Application.CQRS.AccountModule.Handlers
 {
@@ -15,7 +16,12 @@ namespace ToDoAPI.Application.CQRS.AccountModule.Handlers
 
         public async Task<bool> Handle(DeleteAccountProfileCommand request, CancellationToken cancellationToken)
         {
-            return await _repo.DeleteAsync(request.Id);
+            var success = await _repo.DeleteAsync(request.Id, cancellationToken);
+
+            if (!success)
+                throw new NotFoundException($"Account with ID {request.Id} not found");
+
+            return true;
         }
     }
 }

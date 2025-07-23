@@ -5,7 +5,7 @@ namespace ToDoAPI.Domain.Wrappers
     public class ApiResponse<T>
     {
         [JsonPropertyName("success")]
-        public bool Success { get; set; }
+        public bool Success => StatusCode is >= 200 and < 300;
 
         [JsonPropertyName("message")]
         public string Message { get; set; }
@@ -17,26 +17,30 @@ namespace ToDoAPI.Domain.Wrappers
         public int StatusCode { get; set; }
 
         [JsonPropertyName("errors")]
-        public List<string>? Errors { get; set; }
+        public List<string> Errors { get; set; } = new();
 
-        // 🟢 Success constructor
-        public ApiResponse(T data, string message = "Success", int statusCode = 200)
+        [JsonPropertyName("timestamp")]
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+
+        [JsonPropertyName("traceId")]
+        public string? TraceId { get; set; }
+
+        // Success constructor
+        public ApiResponse(T data, string message = "Success", int statusCode = 200, string? traceId = null)
         {
-            Success = true;
             Data = data;
             Message = message;
             StatusCode = statusCode;
-            Errors = null;
+            TraceId = traceId;
         }
 
-        // 🔴 Error constructor
-        public ApiResponse(string message, List<string>? errors = null, int statusCode = 400)
+        // Error constructor
+        public ApiResponse(string message, List<string>? errors = null, int statusCode = 400, string? traceId = null)
         {
-            Success = false;
-            Data = default;
             Message = message;
             StatusCode = statusCode;
-            Errors = errors;
+            Errors = errors ?? new List<string>();
+            TraceId = traceId;
         }
     }
 }
