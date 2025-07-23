@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
+using ToDoAPI.Domain.Wrappers;
 
 namespace ToDoAPI.API.Middleware
 {
@@ -23,10 +24,18 @@ namespace ToDoAPI.API.Middleware
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled exception occurred");
+
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 context.Response.ContentType = "application/json";
-                var response = new { message = "An unexpected error occurred." };
-                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+
+                var response = new ApiResponse<string>(
+                    message: "An unexpected error occurred.",
+                    errors: new List<string> { ex.Message },
+                    statusCode: context.Response.StatusCode
+                );
+
+                var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+                await context.Response.WriteAsync(JsonSerializer.Serialize(response, options));
             }
         }
     }

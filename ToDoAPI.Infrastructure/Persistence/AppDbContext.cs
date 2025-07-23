@@ -8,21 +8,22 @@ namespace ToDoAPI.Infrastructure.Persistence
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<ToDo> ToDos { get; set; }
+        public DbSet<AccountProfile> AccountProfiles { get; set; }
+        public DbSet<TaskItem> TaskItems { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Add index to UserEmail for faster lookups
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.UserEmail)
-                .HasDatabaseName("IX_User_UserEmail");
+            // Index for fast account lookup
+            modelBuilder.Entity<AccountProfile>()
+                .HasIndex(a => a.Email)
+                .HasDatabaseName("IX_AccountProfile_Email");
 
-            // Add index to Task for better filtering
-            modelBuilder.Entity<ToDo>()
-                .HasIndex(t => t.Task)
-                .HasDatabaseName("IX_ToDo_Task");
+            // Index for faster task filtering
+            modelBuilder.Entity<TaskItem>()
+                .HasIndex(t => t.Description)
+                .HasDatabaseName("IX_TaskItem_Description");
         }
     }
 }
