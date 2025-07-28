@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿
+
+using MediatR;
 using ToDoAPI.Application.Interfaces;
 using ToDoAPI.Application.CQRS.TaskModule.Queries;
 using ToDoAPI.Domain.Entities;
@@ -8,19 +10,23 @@ namespace ToDoAPI.Application.CQRS.TaskModule.Handlers
 {
     public class GetTaskItemByIdHandler : IRequestHandler<GetTaskItemByIdQuery, TaskItem>
     {
-        private readonly ITaskRepository _repository;
+        private readonly ITaskRepository _taskRepository;
+        private readonly IAccountRepository _accountRepository;
 
-        public GetTaskItemByIdHandler(ITaskRepository repository)
+        public GetTaskItemByIdHandler(ITaskRepository taskRepository, IAccountRepository accountRepository)
         {
-            _repository = repository;
+            _taskRepository = taskRepository;
+            _accountRepository = accountRepository;
         }
 
         public async Task<TaskItem> Handle(GetTaskItemByIdQuery request, CancellationToken cancellationToken)
         {
-            var task = await _repository.GetByIdAsync(request.Id, cancellationToken);
+            var task = await _taskRepository.GetByIdAsync(request.Id, cancellationToken);
 
             if (task is null)
                 throw new NotFoundException($"Task with ID {request.Id} not found");
+
+            // Future use: account verification or access control via _accountRepository
 
             return task;
         }

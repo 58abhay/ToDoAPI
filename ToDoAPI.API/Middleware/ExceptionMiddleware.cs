@@ -27,8 +27,6 @@ namespace ToDoAPI.API.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "❌ Unhandled exception [TraceId: {TraceId}]: {Message}", traceId, ex.Message);
-
                 var statusCode = ex switch
                 {
                     ValidationException => HttpStatusCode.BadRequest,
@@ -36,19 +34,27 @@ namespace ToDoAPI.API.Middleware
                     _ => HttpStatusCode.InternalServerError
                 };
 
+                var errorMessage = ex switch
+                {
+                    ValidationException => "Validation failed.",
+                    NotFoundException nf => nf.Message,
+                    _ => "An unexpected error occurred."
+                };
+
+                var errorDetails = ex switch
+                {
+                    ValidationException ve => ve.Errors,
+                    NotFoundException => new List<string> { "Resource not found." },
+                    _ => new List<string> { ex.Message }
+                };
+
+                _logger.LogError(ex,
+                    "Exception caught in middleware | TraceId: {TraceId} | StatusCode: {StatusCode} | Message: {ErrorMessage}",
+                    traceId, (int)statusCode, errorMessage);
+
                 var response = new ApiResponse<string>(
-                    message: ex switch
-                    {
-                        ValidationException => "Validation failed.",
-                        NotFoundException nf => nf.Message,
-                        _ => "An unexpected error occurred."
-                    } + $" [TraceId: {traceId}]",
-                    errors: ex switch
-                    {
-                        ValidationException ve => ve.Errors,
-                        NotFoundException => new List<string> { "Resource not found." },
-                        _ => new List<string> { ex.Message }
-                    },
+                    message: $"{errorMessage} [TraceId: {traceId}]",
+                    errors: errorDetails,
                     statusCode: (int)statusCode
                 );
 

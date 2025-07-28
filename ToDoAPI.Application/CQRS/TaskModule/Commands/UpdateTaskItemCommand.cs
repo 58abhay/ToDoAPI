@@ -1,8 +1,11 @@
-﻿using MediatR;
+﻿
+
+using MediatR;
 using ToDoAPI.Domain.Entities;
+using System;
 
 namespace ToDoAPI.Application.CQRS.TaskModule.Commands
 {
-    public record UpdateTaskItemCommand(int Id, string Description, bool IsCompleted)
+    public record UpdateTaskItemCommand(Guid Id, string Description, bool IsCompleted)
         : IRequest<TaskItem>;
 }
