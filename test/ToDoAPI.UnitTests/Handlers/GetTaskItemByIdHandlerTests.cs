@@ -9,7 +9,7 @@ using ToDoAPI.Application.Interfaces;
 using ToDoAPI.Domain.Entities;
 using ToDoAPI.Domain.Exceptions;
 
-namespace ToDoAPI.UnitTests.CQRS
+namespace ToDoAPI.UnitTests.Handlers
 {
     public class GetTaskItemByIdHandlerTests
     {

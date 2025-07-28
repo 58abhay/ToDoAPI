@@ -14,18 +14,38 @@ using ToDoAPI.Application.Validators;
 using ToDoAPI.Infrastructure.Persistence;
 using ToDoAPI.Infrastructure.Persistence.Repositories;
 
-var builder = WebApplication.CreateBuilder(args);
+//var builder = WebApplication.CreateBuilder(args);
 
-//  Logging with Serilog — Console + File + Context Enrichment
-Log.Logger = new LoggerConfiguration()
-    .Enrich.FromLogContext()
-    .Enrich.WithMachineName()
-    .Enrich.WithThreadId()
-    .WriteTo.Console()
-    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+////  Logging with Serilog — Console + File + Context Enrichment
+//Log.Logger = new LoggerConfiguration()
+//    .Enrich.FromLogContext()
+//    .Enrich.WithMachineName()
+//    .Enrich.WithThreadId()
+//    .WriteTo.Console()
+//    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+//    .CreateLogger();
 
-builder.Host.UseSerilog();
+namespace ToDoApi.Api
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Serilog Configuration
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development"}.json", optional: true)
+                .Build();
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration) // Read Serilog config from appsettings.json
+                .CreateLogger();
+            Log.Information("Starting ToDo API web host.");
+            var builder = WebApplication.CreateBuilder(args);
+            // --- Serilog Integration with Host Builder
+            builder.Host.UseSerilog();
+
+            //builder.Host.UseSerilog();
 
 //  EF Core + PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -103,7 +123,12 @@ app.UseSwaggerUI(options =>
 
 //  Request Pipeline
 app.UseHttpsRedirection();
+app.UseSerilogRequestLogging(); // Serilog request logging
 app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+            }
+    }
+}
+
