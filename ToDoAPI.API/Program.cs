@@ -40,7 +40,24 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateAccountDtoValidator>(
 // Controllers & Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+<<<<<<< Updated upstream
 builder.Services.AddSwaggerGen();
+=======
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "ToDo API",
+        Version = "v1",
+        Description = "Endpoints for managing accounts and tasks",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name = "Abhaydeep",
+            Url = new Uri("https://www.linkedin.com/in/abhaydeep-singh-07328016b/")
+        }
+    });
+});
+>>>>>>> Stashed changes
 
 var app = builder.Build();
 
@@ -51,8 +68,21 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+<<<<<<< Updated upstream
 // Request Pipeline
 app.UseHttpsRedirection();
+=======
+
+//  Request Pipeline
+//app.UseHttpsRedirection();
+
+if (!app.Environment.IsProduction())
+{
+    app.UseHttpsRedirection();
+}
+
+app.UseSerilogRequestLogging(); // Serilog request logging
+>>>>>>> Stashed changes
 app.UseAuthorization();
 app.MapControllers();
 
