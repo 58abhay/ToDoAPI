@@ -73,6 +73,7 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 =======
 
+
 //  Request Pipeline
 //app.UseHttpsRedirection();
 
