@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16
+    container_name: tododb
+    restart: always
+    environment:
+      POSTGRES_DB: ToDoDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 3571h+4U
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  todoapi:
+    build:
+      context: .
+      dockerfile: ToDoAPI.API/Dockerfile
+    container_name: todoapi
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=tododb;Port=5432;Database=ToDoDb;Username=postgres;Password=3571h+4U
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/app/logs
+    entrypoint: ["dotnet", "ToDoAPI.API.dll"]
+
+volumes:
+  postgres_data:

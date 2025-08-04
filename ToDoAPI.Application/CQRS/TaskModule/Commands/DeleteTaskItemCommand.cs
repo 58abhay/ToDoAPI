@@ -1,6 +1,9 @@
-﻿using MediatR;
+﻿
+
+using MediatR;
+using System;
 
 namespace ToDoAPI.Application.CQRS.TaskModule.Commands
 {
-    public record DeleteTaskItemCommand(int Id) : IRequest<bool>;
+    public record DeleteTaskItemCommand(Guid Id) : IRequest<bool>;
 }

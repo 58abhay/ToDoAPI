@@ -1,8 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+
+using Microsoft.EntityFrameworkCore;
 using ToDoAPI.Application.Interfaces;
 using ToDoAPI.Domain.Entities;
 using ToDoAPI.Infrastructure.Persistence;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ToDoAPI.Infrastructure.Persistence.Repositories
 {
@@ -22,7 +28,7 @@ namespace ToDoAPI.Infrastructure.Persistence.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<TaskItem?> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<TaskItem?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _db.TaskItems
                 .AsNoTracking()
@@ -36,7 +42,7 @@ namespace ToDoAPI.Infrastructure.Persistence.Repositories
             return task;
         }
 
-        public async Task<TaskItem?> UpdateAsync(int id, TaskItem updated, CancellationToken cancellationToken)
+        public async Task<TaskItem?> UpdateAsync(Guid id, TaskItem updated, CancellationToken cancellationToken)
         {
             var existing = await _db.TaskItems.FindAsync(new object[] { id }, cancellationToken);
             if (existing is null) return null;
@@ -48,7 +54,7 @@ namespace ToDoAPI.Infrastructure.Persistence.Repositories
             return existing;
         }
 
-        public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+        public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             var task = await _db.TaskItems.FindAsync(new object[] { id }, cancellationToken);
             if (task is null) return false;
@@ -84,8 +90,16 @@ namespace ToDoAPI.Infrastructure.Persistence.Repositories
 
             query = query.Skip((page - 1) * pageSize).Take(pageSize);
 
-            Console.WriteLine(query.ToQueryString());
+            Console.WriteLine(query.ToQueryString()); //  Inspecting generated SQL
             return await query.ToListAsync(cancellationToken);
+        }
+
+        public async Task<int> CountByUserAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            return await _db.TaskItems
+                .AsNoTracking()
+                .Where(t => t.AccountId == userId)
+                .CountAsync(cancellationToken);
         }
     }
 }

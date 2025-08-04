@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿
+
+using MediatR;
 using ToDoAPI.Application.CQRS.TaskModule.Commands;
 using ToDoAPI.Application.Interfaces;
 using ToDoAPI.Domain.Entities;
@@ -8,26 +10,36 @@ namespace ToDoAPI.Application.CQRS.TaskModule.Handlers
 {
     public class CreateTaskItemHandler : IRequestHandler<CreateTaskItemCommand, TaskItem>
     {
-        private readonly ITaskRepository _repository;
+        private readonly ITaskRepository _taskRepository;
+        private readonly IAccountRepository _accountRepository;
 
-        public CreateTaskItemHandler(ITaskRepository repository)
+        public CreateTaskItemHandler(ITaskRepository taskRepository, IAccountRepository accountRepository)
         {
-            _repository = repository;
+            _taskRepository = taskRepository;
+            _accountRepository = accountRepository;
         }
 
         public async Task<TaskItem> Handle(CreateTaskItemCommand request, CancellationToken cancellationToken)
         {
-            // Optional internal validation (FluentValidation handles this too)
+            var errors = new List<string>();
+
             if (string.IsNullOrWhiteSpace(request.Description))
-                throw new ValidationException(new List<string> { "Description cannot be empty." });
+                errors.Add("Description cannot be empty.");
+
+            if (request.AccountId == Guid.Empty)
+                errors.Add("AccountId must be a valid GUID.");
+
+            if (errors.Any())
+                throw new ValidationException(errors);
 
             var newTask = new TaskItem
             {
                 Description = request.Description,
-                IsCompleted = request.IsCompleted
+                IsCompleted = request.IsCompleted,
+                AccountId = request.AccountId // Corrected property name
             };
 
-            return await _repository.CreateAsync(newTask, cancellationToken);
+            return await _taskRepository.CreateAsync(newTask, cancellationToken);
         }
     }
 }

@@ -4,6 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>4e8848f9-78a5-4ffd-8c47-6d8e13986ec9</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 	
 	<ItemGroup>
@@ -15,11 +18,18 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.4" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+		<PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+		<PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+		<PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
 	</ItemGroup>
 	
@@ -27,6 +37,54 @@
 	  <ProjectReference Include="..\ToDoAPI.Application\ToDoAPI.Application.csproj" />
 	  <ProjectReference Include="..\ToDoAPI.Domain\ToDoAPI.Domain.csproj" />
 	  <ProjectReference Include="..\ToDoAPI.Infrastructure\ToDoAPI.Infrastructure.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="..\.dockerignore" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="..\.dockerignore" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="..\.dockerignore" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="..\.dockerignore" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="..\.dockerignore" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="..\.dockerignore" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="..\.dockerignore" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="..\.dockerignore" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="..\.dockerignore" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="..\.dockerignore" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="..\.dockerignore" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="..\.dockerignore" />
 	</ItemGroup>	
 	
 </Project>

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+
+using Microsoft.EntityFrameworkCore;
 using ToDoAPI.Domain.Entities;
 
 namespace ToDoAPI.Infrastructure.Persistence
@@ -24,6 +26,15 @@ namespace ToDoAPI.Infrastructure.Persistence
             modelBuilder.Entity<TaskItem>()
                 .HasIndex(t => t.Description)
                 .HasDatabaseName("IX_TaskItem_Description");
+
+            //  Ensure Guid fields are stored as PostgreSQL 'uuid'
+            modelBuilder.Entity<TaskItem>()
+                .Property(t => t.Id)
+                .HasColumnType("uuid");
+
+            modelBuilder.Entity<TaskItem>()
+                .Property(t => t.AccountId)
+                .HasColumnType("uuid");
         }
     }
 }
