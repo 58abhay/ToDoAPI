@@ -291,19 +291,54 @@ The project has been fully upgraded to use **asynchronous programming** with `as
 
 ---
 
-## 📚 Future Enhancements
+### 🧹 Codebase Refactoring
+- Restructured solution into clean architecture layers:
+  - `ToDoAPI.API`, `ToDoAPI.Application`, `ToDoAPI.Domain`, `ToDoAPI.Infrastructure`
+- Implemented CQRS pattern using MediatR.
+- Added FluentValidation for request model validation.
 
-- 🔐 Add JWT authentication and role-based authorization
-- ⚡ Refactor services to use async EF Core methods
-- 🧪 Implement unit and integration testing with xUnit
-- 📊 Add filtering, sorting, and pagination to endpoints
-- 🌱 Seed initial data during migrations or startup
-- 📄 Improve Swagger docs with XML comments and examples
-- 🧰 Integrate structured logging (e.g., Serilog)
-- 🌐 Support API versioning (/api/v1, /api/v2)
-- 🧠 Add caching for frequently accessed endpoints
-- 🔗 Model relationships (e.g., User → ToDos) with .Include()
+### 📊 Serilog Logging
+- Integrated Serilog for structured logging.
+- Configured rolling file logs and console output.
+- Logs persisted in mounted volume for container diagnostics.
 
+### 📄 Swagger Documentation
+- Enabled Swagger UI for API testing and documentation.
+- Customized endpoint descriptions and model schemas.
 
+### 🧪 EF Core Migrations
+- Created initial migrations for `Task` and `Account` entities.
+- Enabled automatic migration application on container startup.
+- Added UUID support and indexing for optimized queries.
 
+### 🐘 PostgreSQL Integration
+- Integrated PostgreSQL (v16) as the primary database.
+- Configured EF Core to use the Npgsql provider.
+- Added connection string via Docker Compose environment variables.
 
+### 📦 Docker Compose Setup
+- Defined `docker-compose.yml` to orchestrate:
+  - ToDoAPI container
+  - PostgreSQL container
+- Enabled inter-container networking.
+- Used `.env` file for managing secrets and environment-specific configs.
+
+### 🐳 Dockerization of ToDoAPI
+- Created a custom `Dockerfile` for the .NET Web API.
+- Used multi-stage builds to reduce image size.
+- Exposed ports and configured environment variables for container deployment.
+
+---
+
+## 🔮 Future Enhancements (Planned)
+
+- 🧠 **AI Integration** – Smart task suggestions using ML/NLP APIs  
+- 🔄 **Real-Time Updates** – Add SignalR/WebSockets for live task sync  
+- 🧬 **GraphQL/gRPC Support** – Flexible querying and efficient service communication  
+- 🧭 **API Gateway** – Add rate limiting, caching, and request routing  
+- 🔐 **Advanced Security** – OAuth2, JWT refresh tokens, and RBAC  
+- 📈 **Monitoring & Metrics** – Use Prometheus, Grafana, or OpenTelemetry  
+- 🧪 **Automated Testing** – Unit + integration tests with TestContainers  
+- 🧰 **AsyncAPI Docs** – Document event-driven components (e.g., RabbitMQ)  
+- 🌐 **Multi-Tenancy** – Support isolated data for multiple organizations  
+- 📦 **CI/CD Pipeline** – Automate builds and deployments via GitHub Actions
