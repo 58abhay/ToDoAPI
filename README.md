@@ -19,38 +19,92 @@ A fully documented and production-grade Web API built with ASP.NET Core. Include
 
 ## 🏗 Project Architecture
 ```
-ToDoAPI/
-├── Controllers/
-│   ├── TasksController.cs
-│   └── UserController.cs
-├── Data/
-│   └── AppDbContext.cs
-├── Middleware/
-│   └── ExceptionMiddleware.cs
-├── Migrations/
-│   ├── 20250716105545_InitialCreate.cs
-│   └── AppDbContextModelSnapshot
-├── Models/
-│   ├── ApiResponse.cs
-│   ├── ToDo.cs
-│   └── User.cs
-├── Models/DTOs/
-│   ├── CreateToDoDto.cs
-│   ├── CreateUserDto.cs
-│   ├── UpdateToDoDto.cs
-│   └── UpdateUserDto.cs
-├── Services/
-│   ├── ToDoService.cs
-│   └── UserService.cs
-├── Services/Interfaces/
-│   ├── IToDoService.cs
-│   └── IUserService.cs
-├── Validators/
-│   ├── CreateToDoDtoValidator.cs
-│   ├── UpdateToDoDtoValidator.cs
-│   ├── CreateUserDtoValidator.cs
-│   └── UpdateUserDtoValidator.cs
-├── Program.cs
+ToDoAPI/ (Solution)
+├── test/
+│   └── ToDoAPI.UnitTests/
+│       ├── Controllers/
+│       │   └── TaskItemsControllerTests.cs
+│       └── Handlers/
+│           ├── CreateTaskItemHandlerTests.cs
+│           └── GetTaskItemByIdHandlerTests.cs
+├── docker-compose/
+│   └── docker-compose.yml
+├── ToDoAPI.API/
+│   ├── Controllers/
+│   │   ├── AccountProfilesController.cs
+│   │   └── TaskItemsController.cs
+│   ├── Middleware/
+│   │   └── ExceptionMiddleware.cs
+│   ├── Docker/
+│   │   └── .dockerignore
+│   └── Program.cs
+├── ToDoAPI.Application/
+│   ├── Configuration/
+│   │   └── AppSettings.cs
+│   ├── CQRS/
+│   │   ├── AccountModule/
+│   │   │   ├── Commands/
+│   │   │   │   ├── CreateAccountProfileCommand.cs
+│   │   │   │   ├── DeleteAccountProfileCommand.cs
+│   │   │   │   └── UpdateAccountProfileCommand.cs
+│   │   │   ├── Handler/
+│   │   │   │   ├── CreateAccountProfileHandler.cs
+│   │   │   │   ├── DeleteAccountProfileHandler.cs
+│   │   │   │   ├── GetAccountProfileByIdHandler.cs
+│   │   │   │   ├── GetAccountProfileListHandler.cs
+│   │   │   │   └── UpdateAccountProfileHandler.cs
+│   │   │   └── Queries/
+│   │   │       ├── GetAccountProfileByIdQuery.cs
+│   │   │       └── GetAccountProfileListQuery.cs
+│   │   └── TaskModule/
+│   │       ├── Commands/
+│   │       │   ├── CreateTaskItemCommand.cs
+│   │       │   ├── DeleteTaskItemCommand.cs
+│   │       │   └── UpdateTaskItemCommand.cs
+│   │       ├── Handler/
+│   │       │   ├── CreateTaskItemHandler.cs
+│   │       │   ├── DeleteTaskItemHandler.cs
+│   │       │   ├── GetTaskItemByIdHandler.cs
+│   │       │   ├── GetTaskItemListHandler.cs
+│   │       │   └── UpdateTaskItemHandler.cs
+│   │       └── Queries/
+│   │           ├── GetTaskItemByIdQuery.cs
+│   │           └── GetTaskItemListQuery.cs
+│   ├── DTOs/
+│   │   ├── CreateAccountDto.cs
+│   │   ├── CreateTaskDto.cs
+│   │   ├── TaskDto.cs
+│   │   ├── UpdateAccountDto.cs
+│   │   └── UpdateTaskDto.cs
+│   ├── Interface/
+│   │   ├── IAccountRepository.cs
+│   │   ├── IAccountService.cs
+│   │   ├── ITaskRepository.cs
+│   │   └── ITaskService.cs
+│   ├── Services/
+│   │   ├── AccountService.cs
+│   │   └── TaskService.cs
+│   └── Validation/
+│       ├── CreateAccountDtoValidator.cs
+│       ├── CreateTaskDtoValidator.cs
+│       ├── UpdateAccountDtoValidator.cs
+│       └── UpdateTaskDtoValidator.cs
+├── ToDoAPI.Domain/
+│   ├── Entities/
+│   │   ├── AccountProfile.cs
+│   │   ├── ApiResponse.cs
+│   │   └── TaskItem.cs
+│   └── Exception/
+│       ├── NotFoundException.cs
+│       └── ValidationException.cs
+├── ToDoAPI.Infrastructure/
+│   ├── Migrations (Auto-generated)
+│   └── Persistence/
+│       ├── Repositories/
+│       │   ├── AccountRepository.cs
+│       │   └── TaskRepository.cs
+│       ├── AppDbContext.cs
+│       └── DesignTimeDbContextFactory.cs
 └── README.md
 ```
 
